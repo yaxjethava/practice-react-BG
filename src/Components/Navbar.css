@@ -1,0 +1,106 @@
+/* Navbar.css */
+.navbar {
+    font-family: sans-serif;
+    box-sizing: border-box;
+    background: #1976D2;
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100% !important;
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* max-width: 1400px; */
+    margin: 0 auto;
+    padding: 0 10px
+}
+
+/* Logo */
+.logo {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Navigation Links */
+.nav-links {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background 0.3s;
+    font-size: 15px;
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+}
+
+/* Highlighted Party Button */
+.party-btn {
+    background: #d81f1f;
+    font-weight: 600;
+}
+
+.party-btn:hover {
+    background: #ff1111;
+}
+
+.party-btn.active {
+    background: #981010;
+}
+
+/* Menu Icon (Hamburger) - Hidden by default */
+.menu-icon {
+    display: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* 🔥 Responsive - Only shows hamburger on mobile */
+@media (max-width: 768px) {
+    .menu-icon {
+        display: block;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: #1976D2;
+        flex-direction: column;
+        padding: 20px;
+        gap: 15px;
+        display: none;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-links.open {
+        display: flex;
+    }
+
+    .nav-link {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+    }
+}
