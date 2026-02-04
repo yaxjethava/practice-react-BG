@@ -15,8 +15,7 @@ const PakkaMaal = () => {
         date: "",
         supplier: "",
         quantity: "",
-        rate: "",
-        quality: "",
+        totalAmount: "", // Changed from rate
         paymentType: "Cash"
     });
 
@@ -26,8 +25,6 @@ const PakkaMaal = () => {
     const filteredSuppliers = suppliers.filter((name) =>
         name.toLowerCase().includes(search.toLowerCase())
     );
-
-    const totalAmount = Number(formData.quantity || 0) * Number(formData.rate || 0);
 
     // Single handleChange function for all inputs
     const handleChange = (e) => {
@@ -46,7 +43,7 @@ const PakkaMaal = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log({ ...formData, totalAmount });
+        console.log({ ...formData });
         alert("Pakka Maal Entry Added");
 
         // Reset form
@@ -54,8 +51,7 @@ const PakkaMaal = () => {
             date: "",
             supplier: "",
             quantity: "",
-            rate: "",
-            quality: "",
+            totalAmount: "",
             paymentType: "Cash"
         });
         setSearch("");
@@ -129,19 +125,6 @@ const PakkaMaal = () => {
                     )}
                 </div>
 
-                {/* Quality */}
-                <div className="form-group">
-                    <label>Quality / Type</label>
-                    <input
-                        type="text"
-                        name="quality"
-                        placeholder="Ex: Long Staple, Medium, Superior"
-                        value={formData.quality}
-                        onChange={handleChange}
-                        className="form-input"
-                    />
-                </div>
-
                 <div className="form-row">
                     {/* Quantity */}
                     <div className="form-group">
@@ -157,17 +140,17 @@ const PakkaMaal = () => {
                         />
                     </div>
 
-                    {/* Rate */}
+                    {/* Total Amount - Replaced Rate field */}
                     <div className="form-group">
-                        <label>Rate (₹)</label>
+                        <label>Total Amount (₹)</label>
                         <input
                             type="number"
-                            name="rate"
-                            value={formData.rate}
+                            name="totalAmount"
+                            value={formData.totalAmount}
                             onChange={handleChange}
                             required
                             className="form-input"
-                            placeholder="Enter rate per kg"
+                            placeholder="Enter total amount"
                         />
                     </div>
                 </div>
@@ -189,7 +172,7 @@ const PakkaMaal = () => {
 
                 <div className="total-box-paaka">
                     <span className="total-label">Total Amount:</span>
-                    <span className="total-value">₹ {totalAmount.toLocaleString()}</span>
+                    <span className="total-value">₹ {Number(formData.totalAmount || 0).toLocaleString()}</span>
                 </div>
 
                 <button type="submit" className="save-btn-pakaa">

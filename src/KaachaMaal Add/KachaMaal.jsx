@@ -16,7 +16,7 @@ const KachaMaalAdd = () => {
         receiptNo: "",
         supplier: "",
         quantity: "",
-        rate: "",
+        totalAmount: "", // Changed from rate to totalAmount
         paymentType: "Cash"
     });
 
@@ -26,8 +26,6 @@ const KachaMaalAdd = () => {
     const filteredSuppliers = suppliers.filter((name) =>
         name.toLowerCase().includes(search.toLowerCase())
     );
-
-    const totalAmount = Number(formData.quantity || 0) * Number(formData.rate || 0);
 
     // Single handleChange function for all inputs
     const handleChange = (e) => {
@@ -46,7 +44,7 @@ const KachaMaalAdd = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log({ ...formData, totalAmount });
+        console.log({ ...formData });
         alert("Kacha Maal Entry Added");
     };
 
@@ -149,17 +147,17 @@ const KachaMaalAdd = () => {
                         />
                     </div>
 
-                    {/* Rate */}
+                    {/* Total Amount - Changed from Rate */}
                     <div className="form-group">
-                        <label>Rate (₹)</label>
+                        <label>Total Amount (₹)</label>
                         <input
                             type="number"
-                            name="rate"
-                            value={formData.rate}
+                            name="totalAmount"
+                            value={formData.totalAmount}
                             onChange={handleChange}
                             required
                             className="form-input"
-                            placeholder="Enter rate per kg"
+                            placeholder="Enter total amount"
                         />
                     </div>
                 </div>
@@ -181,7 +179,7 @@ const KachaMaalAdd = () => {
 
                 <div className="total-box-kacha">
                     <span className="total-label">Total Amount:</span>
-                    <span className="total-value">₹ {totalAmount.toLocaleString()}</span>
+                    <span className="total-value">₹ {Number(formData.totalAmount || 0).toLocaleString()}</span>
                 </div>
 
                 <button type="submit" className="save-btn-kacha">

@@ -668,6 +668,317 @@
     color: #e74c3c;
 }
 
+
+
+/* Payment Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.payment-modal {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background: linear-gradient(135deg, #27ae60 0%, #219653 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.close-modal:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.modal-content {
+    padding: 25px;
+}
+
+.sale-info {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-left: 4px solid #3498db;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #dfe6e9;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.info-value {
+    font-weight: 500;
+    color: #2c3e50;
+    font-family: 'Courier New', monospace;
+}
+
+.info-value.pending {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #dfe6e9;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.cancel-btn,
+.submit-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.cancel-btn {
+    background: #95a5a6;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background: #7f8c8d;
+    transform: translateY(-2px);
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #27ae60 0%, #219653 100%);
+    color: white;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #219653 0%, #1e8449 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+/* Action Buttons in Table */
+.actions-cell {
+    min-width: 180px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.add-payment-btn,
+.mark-paid-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.add-payment-btn {
+    background: #3498db;
+    color: white;
+    border: 1px solid #2980b9;
+}
+
+.add-payment-btn:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
+}
+
+.mark-paid-btn {
+    background: #2ecc71;
+    color: white;
+    border: 1px solid #27ae60;
+}
+
+.mark-paid-btn:hover {
+    background: #27ae60;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(46, 204, 113, 0.3);
+}
+
+.fully-paid {
+    color: #27ae60;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 4px 10px;
+    background: #e8f5e9;
+    border-radius: 4px;
+    border: 1px solid #c8e6c9;
+}
+
+/* Responsive for Payment Modal */
+@media (max-width: 768px) {
+    .payment-modal {
+        max-width: 95%;
+        max-height: 95vh;
+    }
+
+    .modal-header {
+        padding: 15px 20px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .cancel-btn,
+    .submit-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-overlay {
+        padding: 10px;
+    }
+
+    .modal-header h3 {
+        font-size: 18px;
+    }
+
+    .sale-info {
+        padding: 15px;
+    }
+
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .add-payment-btn,
+    .mark-paid-btn {
+        width: 100%;
+        text-align: center;
+        padding: 8px;
+    }
+}
+
+/* Update table styles to include new columns */
+.sales-table th:nth-child(9),
+/* Actions column */
+.sales-table td:nth-child(9) {
+    text-align: center;
+}
+
+/* Remove cotton type related styles */
+.cotton-type-badge {
+    display: none;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .filter-row {

@@ -2,22 +2,22 @@ import React, { useState, useEffect } from "react";
 import "./KachaMaalView.css";
 
 const MaalView = () => {
-  // Sample data with both Kacha and Paaka Maal entries
+  // Sample data with both Kacha and Paaka Maal entries - Updated to match new form structure
   const initialEntries = [
     // Kacha Maal entries
-    { id: 1, date: "2026-01-30", receiptNo: 102030, supplier: "Ravi Traders", maalType: "kacha", quantity: 100, rate: 150, total: 15000 },
-    { id: 2, date: "2026-01-31", receiptNo: 222030, supplier: "Shree Cotton", maalType: "kacha", quantity: 50, rate: 160, total: 8000 },
-    { id: 3, date: "2026-01-28", receiptNo: 102029, supplier: "Patel Supplier", maalType: "kacha", quantity: 75, rate: 145, total: 10875 },
-    { id: 4, date: "2026-01-25", receiptNo: 102028, supplier: "Royal Cotton", maalType: "kacha", quantity: 120, rate: 155, total: 18600 },
-    { id: 5, date: "2026-01-20", receiptNo: 102027, supplier: "Mahesh Cotton Works", maalType: "kacha", quantity: 90, rate: 148, total: 13320 },
+    { id: 1, date: "2026-01-30", receiptNo: 102030, supplier: "Ravi Traders", maalType: "kacha", quantity: 100, total: 15000 },
+    { id: 2, date: "2026-01-31", receiptNo: 222030, supplier: "Shree Cotton", maalType: "kacha", quantity: 50, total: 8000 },
+    { id: 3, date: "2026-01-28", receiptNo: 102029, supplier: "Patel Supplier", maalType: "kacha", quantity: 75, total: 10875 },
+    { id: 4, date: "2026-01-25", receiptNo: 102028, supplier: "Royal Cotton", maalType: "kacha", quantity: 120, total: 18600 },
+    { id: 5, date: "2026-01-20", receiptNo: 102027, supplier: "Mahesh Cotton Works", maalType: "kacha", quantity: 90, total: 13320 },
 
     // Paaka Maal entries
-    { id: 6, date: "2026-01-30", receiptNo: 202030, supplier: "Ravi Traders", maalType: "paaka", quantity: 80, rate: 180, total: 14400 },
-    { id: 7, date: "2026-01-31", receiptNo: 322030, supplier: "Shree Cotton", maalType: "paaka", quantity: 45, rate: 190, total: 8550 },
-    { id: 8, date: "2026-02-01", receiptNo: 222031, supplier: "Gujarat Cotton", maalType: "paaka", quantity: 60, rate: 185, total: 11100 },
-    { id: 9, date: "2026-02-02", receiptNo: 222032, supplier: "Ravi Traders", maalType: "paaka", quantity: 110, rate: 175, total: 19250 },
-    { id: 10, date: "2026-02-03", receiptNo: 222033, supplier: "Shree Cotton", maalType: "paaka", quantity: 40, rate: 195, total: 7800 },
-    { id: 11, date: "2026-02-04", receiptNo: 222034, supplier: "Patel Supplier", maalType: "paaka", quantity: 95, rate: 185, total: 17575 },
+    { id: 6, date: "2026-01-30", receiptNo: 202030, supplier: "Ravi Traders", maalType: "paaka", quantity: 80, total: 14400 },
+    { id: 7, date: "2026-01-31", receiptNo: 322030, supplier: "Shree Cotton", maalType: "paaka", quantity: 45, total: 8550 },
+    { id: 8, date: "2026-02-01", receiptNo: 222031, supplier: "Gujarat Cotton", maalType: "paaka", quantity: 60, total: 11100 },
+    { id: 9, date: "2026-02-02", receiptNo: 222032, supplier: "Ravi Traders", maalType: "paaka", quantity: 110, total: 19250 },
+    { id: 10, date: "2026-02-03", receiptNo: 222033, supplier: "Shree Cotton", maalType: "paaka", quantity: 40, total: 7800 },
+    { id: 11, date: "2026-02-04", receiptNo: 222034, supplier: "Patel Supplier", maalType: "paaka", quantity: 95, total: 17575 },
   ];
 
   const [entries, setEntries] = useState(initialEntries);
@@ -359,7 +359,6 @@ const MaalView = () => {
               <th>Supplier</th>
               <th>Maal Type</th>
               <th>Quantity (Kg)</th>
-              <th>Rate (₹)</th>
               <th>Total Amount (₹)</th>
             </tr>
           </thead>
@@ -376,13 +375,12 @@ const MaalView = () => {
                     </span>
                   </td>
                   <td className="quantity-cell">{entry.quantity.toFixed(2)}</td>
-                  <td className="rate-cell">₹ {entry.rate.toFixed(2)}</td>
                   <td className="total-cell">₹ {formatCurrency(entry.total)}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="no-data">
+                <td colSpan="6" className="no-data">
                   {dateFilter === "specific" && !specificDate
                     ? "Please select a date to filter"
                     : "No entries found for the selected filters"}

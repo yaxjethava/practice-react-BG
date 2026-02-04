@@ -14,9 +14,7 @@ const Sales = () => {
     const [formData, setFormData] = useState({
         date: "",
         customerName: "",
-        cottonType: "",
-        quantity: "",
-        rate: "",
+        amount: "", // REPLACED: Single amount field instead of quantity, rate, cottonType
         receivedAmount: "",
         paymentMode: "Cash",
     });
@@ -39,7 +37,8 @@ const Sales = () => {
         setIsDropdownOpen(false);
     };
 
-    const totalAmount = Number(formData.quantity) * Number(formData.rate);
+    // Calculate pending amount based on single amount field
+    const totalAmount = Number(formData.amount || 0);
     const pendingAmount = totalAmount - Number(formData.receivedAmount || 0);
 
     const handleSubmit = (e) => {
@@ -51,9 +50,7 @@ const Sales = () => {
         setFormData({
             date: "",
             customerName: "",
-            cottonType: "",
-            quantity: "",
-            rate: "",
+            amount: "",
             receivedAmount: "",
             paymentMode: "Cash",
         });
@@ -64,7 +61,7 @@ const Sales = () => {
         <div className="sales-page">
             <div className="sales-header">
                 <h1>Sales (Vechaan) Entry</h1>
-                <p className="sales-subtitle">Record your cotton sales transactions</p>
+                <p className="sales-subtitle">Record your sales transactions</p>
             </div>
 
             <form className="sales-card" onSubmit={handleSubmit}>
@@ -130,45 +127,19 @@ const Sales = () => {
                     )}
                 </div>
 
-                {/* Cotton Type */}
+                {/* SINGLE AMOUNT FIELD - Replaces Cotton Type, Quantity, and Rate */}
                 <div className="sales-field">
-                    <label>Cotton Type / Quality</label>
+                    <label>Total Amount (₹)</label>
                     <input
-                        type="text"
-                        name="cottonType"
-                        placeholder="Ex: Long Staple, Medium, Superior"
-                        value={formData.cottonType}
+                        type="number"
+                        name="amount"
+                        value={formData.amount}
                         onChange={handleChange}
+                        required
                         className="sales-input"
+                        placeholder="Enter total amount"
+                        min="0"
                     />
-                </div>
-
-                <div className="sales-row">
-                    <div className="sales-field">
-                        <label>Quantity (Kg)</label>
-                        <input
-                            type="number"
-                            name="quantity"
-                            value={formData.quantity}
-                            onChange={handleChange}
-                            required
-                            className="sales-input"
-                            placeholder="Enter quantity"
-                        />
-                    </div>
-
-                    <div className="sales-field">
-                        <label>Rate (₹)</label>
-                        <input
-                            type="number"
-                            name="rate"
-                            value={formData.rate}
-                            onChange={handleChange}
-                            required
-                            className="sales-input"
-                            placeholder="Enter rate per kg"
-                        />
-                    </div>
                 </div>
 
                 <div className="sales-row">
@@ -181,6 +152,7 @@ const Sales = () => {
                             onChange={handleChange}
                             className="sales-input"
                             placeholder="Enter received amount"
+                            min="0"
                         />
                     </div>
 

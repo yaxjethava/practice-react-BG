@@ -2,28 +2,34 @@ import React, { useState, useEffect } from "react";
 import "./SalesView.css";
 
 const SalesView = () => {
-    // Sample sales data
+    // Sample sales data - Updated to match the new form structure
     const initialSales = [
-        { id: 1, date: "2026-01-30", invoiceNo: "INV-001", customerName: "Rahul Traders", cottonType: "Long Staple", quantity: 100, rate: 200, totalAmount: 20000, receivedAmount: 15000, pendingAmount: 5000, paymentMode: "Cash" },
-        { id: 2, date: "2026-01-31", invoiceNo: "INV-002", customerName: "Shree Cotton Mill", cottonType: "Medium Staple", quantity: 50, rate: 190, totalAmount: 9500, receivedAmount: 9500, pendingAmount: 0, paymentMode: "Online" },
-        { id: 3, date: "2026-02-01", invoiceNo: "INV-003", customerName: "Patel Textiles", cottonType: "Superior", quantity: 75, rate: 210, totalAmount: 15750, receivedAmount: 10000, pendingAmount: 5750, paymentMode: "Bank" },
-        { id: 4, date: "2026-02-02", invoiceNo: "INV-004", customerName: "Om Fabrics", cottonType: "Long Staple", quantity: 120, rate: 195, totalAmount: 23400, receivedAmount: 23400, pendingAmount: 0, paymentMode: "Cash" },
-        { id: 5, date: "2026-02-03", invoiceNo: "INV-005", customerName: "Mahadev Exports", cottonType: "Premium", quantity: 90, rate: 220, totalAmount: 19800, receivedAmount: 15000, pendingAmount: 4800, paymentMode: "Credit" },
-        { id: 6, date: "2026-02-04", invoiceNo: "INV-006", customerName: "Krishna Cotton", cottonType: "Medium Staple", quantity: 60, rate: 185, totalAmount: 11100, receivedAmount: 11100, pendingAmount: 0, paymentMode: "Online" },
-        { id: 7, date: "2026-02-05", invoiceNo: "INV-007", customerName: "Rahul Traders", cottonType: "Superior", quantity: 85, rate: 205, totalAmount: 17425, receivedAmount: 12000, pendingAmount: 5425, paymentMode: "Bank" },
-        { id: 8, date: "2026-02-06", invoiceNo: "INV-008", customerName: "Patel Textiles", cottonType: "Long Staple", quantity: 110, rate: 195, totalAmount: 21450, receivedAmount: 21450, pendingAmount: 0, paymentMode: "Cash" },
-        { id: 9, date: "2026-01-28", invoiceNo: "INV-009", customerName: "Shree Cotton Mill", cottonType: "Premium", quantity: 45, rate: 215, totalAmount: 9675, receivedAmount: 9675, pendingAmount: 0, paymentMode: "Online" },
-        { id: 10, date: "2026-01-25", invoiceNo: "INV-010", customerName: "Om Fabrics", cottonType: "Medium Staple", quantity: 95, rate: 190, totalAmount: 18050, receivedAmount: 13000, pendingAmount: 5050, paymentMode: "Credit" },
+        { id: 1, date: "2026-01-30", invoiceNo: "INV-001", customerName: "Rahul Traders", amount: 20000, receivedAmount: 15000, paymentMode: "Cash" },
+        { id: 2, date: "2026-01-31", invoiceNo: "INV-002", customerName: "Shree Cotton Mill", amount: 9500, receivedAmount: 9500, paymentMode: "Online" },
+        { id: 3, date: "2026-02-01", invoiceNo: "INV-003", customerName: "Patel Textiles", amount: 15750, receivedAmount: 10000, paymentMode: "Bank" },
+        { id: 4, date: "2026-02-02", invoiceNo: "INV-004", customerName: "Om Fabrics", amount: 23400, receivedAmount: 23400, paymentMode: "Cash" },
+        { id: 5, date: "2026-02-03", invoiceNo: "INV-005", customerName: "Mahadev Exports", amount: 19800, receivedAmount: 15000, paymentMode: "Credit" },
+        { id: 6, date: "2026-02-04", invoiceNo: "INV-006", customerName: "Krishna Cotton", amount: 11100, receivedAmount: 11100, paymentMode: "Online" },
+        { id: 7, date: "2026-02-05", invoiceNo: "INV-007", customerName: "Rahul Traders", amount: 17425, receivedAmount: 12000, paymentMode: "Bank" },
+        { id: 8, date: "2026-02-06", invoiceNo: "INV-008", customerName: "Patel Textiles", amount: 21450, receivedAmount: 21450, paymentMode: "Cash" },
+        { id: 9, date: "2026-01-28", invoiceNo: "INV-009", customerName: "Shree Cotton Mill", amount: 9675, receivedAmount: 9675, paymentMode: "Online" },
+        { id: 10, date: "2026-01-25", invoiceNo: "INV-010", customerName: "Om Fabrics", amount: 18050, receivedAmount: 13000, paymentMode: "Credit" },
     ];
 
     const [sales, setSales] = useState(initialSales);
     const [filteredSales, setFilteredSales] = useState(initialSales);
 
+    // State for payment modal
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [selectedSale, setSelectedSale] = useState(null);
+    const [paymentAmount, setPaymentAmount] = useState("");
+    const [paymentDate, setPaymentDate] = useState("");
+    const [paymentMode, setPaymentMode] = useState("Cash");
+
     // Filter states
     const [dateFilter, setDateFilter] = useState("all");
     const [specificDate, setSpecificDate] = useState("");
     const [customerFilter, setCustomerFilter] = useState("all");
-    const [cottonTypeFilter, setCottonTypeFilter] = useState("all");
     const [paymentFilter, setPaymentFilter] = useState("all");
     const [pendingFilter, setPendingFilter] = useState("all"); // all, pending, cleared
     const [searchTerm, setSearchTerm] = useState("");
@@ -41,8 +47,96 @@ const SalesView = () => {
 
     // Available options for dropdowns
     const customers = ["Rahul Traders", "Shree Cotton Mill", "Patel Textiles", "Om Fabrics", "Mahadev Exports", "Krishna Cotton"];
-    const cottonTypes = ["Long Staple", "Medium Staple", "Premium", "Superior"];
     const paymentModes = ["Cash", "Bank", "Online", "Credit"];
+
+    // Calculate pending amount for each sale
+    const calculatePendingAmount = (amount, receivedAmount) => {
+        return amount - receivedAmount;
+    };
+
+    // Open payment modal
+    const openPaymentModal = (sale) => {
+        setSelectedSale(sale);
+        const pending = calculatePendingAmount(sale.amount, sale.receivedAmount);
+        setPaymentAmount(pending > 0 ? pending.toString() : "");
+        setPaymentDate(new Date().toISOString().split('T')[0]);
+        setPaymentMode("Cash");
+        setShowPaymentModal(true);
+    };
+
+    // Handle payment submission
+    const handlePaymentSubmit = (e) => {
+        e.preventDefault();
+
+        if (!paymentAmount || paymentAmount <= 0) {
+            alert("Please enter a valid payment amount");
+            return;
+        }
+
+        const paymentNum = Number(paymentAmount);
+
+        // Update the sale with new payment
+        const updatedSales = sales.map(sale => {
+            if (sale.id === selectedSale.id) {
+                const newReceivedAmount = sale.receivedAmount + paymentNum;
+                return {
+                    ...sale,
+                    receivedAmount: newReceivedAmount,
+                    // Add payment history
+                    paymentHistory: [
+                        ...(sale.paymentHistory || []),
+                        {
+                            date: paymentDate,
+                            amount: paymentNum,
+                            mode: paymentMode,
+                            type: "partial"
+                        }
+                    ]
+                };
+            }
+            return sale;
+        });
+
+        setSales(updatedSales);
+
+        // Close modal
+        setShowPaymentModal(false);
+        setSelectedSale(null);
+        setPaymentAmount("");
+
+        alert(`Payment of ₹${paymentNum.toLocaleString()} recorded successfully!`);
+    };
+
+    // Mark as fully paid
+    const markAsFullyPaid = (sale) => {
+        const pending = calculatePendingAmount(sale.amount, sale.receivedAmount);
+        if (pending <= 0) {
+            alert("This invoice is already fully paid!");
+            return;
+        }
+
+        const updatedSales = sales.map(s => {
+            if (s.id === sale.id) {
+                return {
+                    ...s,
+                    receivedAmount: s.amount, // Set received amount equal to total amount
+                    paymentHistory: [
+                        ...(s.paymentHistory || []),
+                        {
+                            date: new Date().toISOString().split('T')[0],
+                            amount: pending,
+                            mode: "Cash",
+                            type: "full"
+                        }
+                    ]
+                };
+            }
+            return s;
+        });
+
+        setSales(updatedSales);
+        alert(`Invoice marked as fully paid! ₹${pending.toLocaleString()} cleared.`);
+    };
 
     // Filter by date range
     const filterByDate = (data) => {
@@ -84,12 +178,6 @@ const SalesView = () => {
         return data.filter(sale => sale.customerName === customerFilter);
     };
 
-    // Filter by cotton type
-    const filterByCottonType = (data) => {
-        if (cottonTypeFilter === "all") return data;
-        return data.filter(sale => sale.cottonType === cottonTypeFilter);
-    };
-
     // Filter by payment mode
     const filterByPayment = (data) => {
         if (paymentFilter === "all") return data;
@@ -99,8 +187,8 @@ const SalesView = () => {
     // Filter by payment status (pending/cleared)
     const filterByPending = (data) => {
         if (pendingFilter === "all") return data;
-        if (pendingFilter === "pending") return data.filter(sale => sale.pendingAmount > 0);
-        if (pendingFilter === "cleared") return data.filter(sale => sale.pendingAmount === 0);
+        if (pendingFilter === "pending") return data.filter(sale => calculatePendingAmount(sale.amount, sale.receivedAmount) > 0);
+        if (pendingFilter === "cleared") return data.filter(sale => calculatePendingAmount(sale.amount, sale.receivedAmount) <= 0);
         return data;
     };
 
@@ -121,9 +209,12 @@ const SalesView = () => {
     // Calculate all statistics
     const calculateStatistics = (data) => {
         // Total calculations
-        const total = data.reduce((sum, sale) => sum + sale.totalAmount, 0);
+        const total = data.reduce((sum, sale) => sum + sale.amount, 0);
         const received = data.reduce((sum, sale) => sum + sale.receivedAmount, 0);
-        const pending = data.reduce((sum, sale) => sum + sale.pendingAmount, 0);
+        const pending = data.reduce((sum, sale) => {
+            const salePending = calculatePendingAmount(sale.amount, sale.receivedAmount);
+            return sum + Math.max(0, salePending); // Only add positive pending amounts
+        }, 0);
 
         setTotalSales(total);
         setTotalReceived(received);
@@ -133,7 +224,7 @@ const SalesView = () => {
         const today = new Date();
         const todayStr = today.toISOString().split('T')[0];
         const daily = data.filter(sale => sale.date === todayStr)
-            .reduce((sum, sale) => sum + sale.totalAmount, 0);
+            .reduce((sum, sale) => sum + sale.amount, 0);
         setDailySales(daily);
 
         // Calculate weekly sales (last 7 days)
@@ -142,7 +233,7 @@ const SalesView = () => {
         const weekly = data.filter(sale => {
             const saleDate = new Date(sale.date);
             return saleDate >= oneWeekAgo && saleDate <= today;
-        }).reduce((sum, sale) => sum + sale.totalAmount, 0);
+        }).reduce((sum, sale) => sum + sale.amount, 0);
         setWeeklySales(weekly);
 
         // Calculate monthly sales (this month)
@@ -150,7 +241,7 @@ const SalesView = () => {
         const monthly = data.filter(sale => {
             const saleDate = new Date(sale.date);
             return saleDate >= startOfMonth && saleDate <= today;
-        }).reduce((sum, sale) => sum + sale.totalAmount, 0);
+        }).reduce((sum, sale) => sum + sale.amount, 0);
         setMonthlySales(monthly);
 
         // Customer-wise totals
@@ -159,9 +250,10 @@ const SalesView = () => {
         const customerPending = {};
 
         data.forEach(sale => {
-            customerTotals[sale.customerName] = (customerTotals[sale.customerName] || 0) + sale.totalAmount;
+            const pending = calculatePendingAmount(sale.amount, sale.receivedAmount);
+            customerTotals[sale.customerName] = (customerTotals[sale.customerName] || 0) + sale.amount;
             customerReceived[sale.customerName] = (customerReceived[sale.customerName] || 0) + sale.receivedAmount;
-            customerPending[sale.customerName] = (customerPending[sale.customerName] || 0) + sale.pendingAmount;
+            customerPending[sale.customerName] = (customerPending[sale.customerName] || 0) + Math.max(0, pending);
         });
 
         // Combine into one object for display
@@ -179,7 +271,7 @@ const SalesView = () => {
         // Payment method-wise totals
         const paymentTotals = {};
         data.forEach(sale => {
-            paymentTotals[sale.paymentMode] = (paymentTotals[sale.paymentMode] || 0) + sale.totalAmount;
+            paymentTotals[sale.paymentMode] = (paymentTotals[sale.paymentMode] || 0) + sale.amount;
         });
         setPaymentWiseTotals(paymentTotals);
     };
@@ -188,13 +280,12 @@ const SalesView = () => {
     useEffect(() => {
         let result = filterByDate(sales);
         result = filterByCustomer(result);
-        result = filterByCottonType(result);
         result = filterByPayment(result);
         result = filterByPending(result);
         result = applySearchFilter(result);
         setFilteredSales(result);
         calculateStatistics(result);
-    }, [dateFilter, specificDate, customerFilter, cottonTypeFilter, paymentFilter, pendingFilter, searchTerm, searchType, sales]);
+    }, [dateFilter, specificDate, customerFilter, paymentFilter, pendingFilter, searchTerm, searchType, sales]);
 
     // Format currency
     const formatCurrency = (amount) => {
@@ -245,6 +336,91 @@ const SalesView = () => {
 
     return (
         <div className="sales-view-container">
+            {/* Payment Modal */}
+            {showPaymentModal && selectedSale && (
+                <div className="modal-overlay">
+                    <div className="payment-modal">
+                        <div className="modal-header">
+                            <h3>Record Payment</h3>
+                            <button className="close-modal" onClick={() => setShowPaymentModal(false)}>×</button>
+                        </div>
+
+                        <div className="modal-content">
+                            <div className="sale-info">
+                                <div className="info-row">
+                                    <span className="info-label">Invoice No:</span>
+                                    <span className="info-value">{selectedSale.invoiceNo}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="info-label">Customer:</span>
+                                    <span className="info-value">{selectedSale.customerName}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="info-label">Total Amount:</span>
+                                    <span className="info-value">₹ {formatCurrency(selectedSale.amount)}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="info-label">Already Received:</span>
+                                    <span className="info-value">₹ {formatCurrency(selectedSale.receivedAmount)}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="info-label">Pending Amount:</span>
+                                    <span className="info-value pending">₹ {formatCurrency(calculatePendingAmount(selectedSale.amount, selectedSale.receivedAmount))}</span>
+                                </div>
+                            </div>
+
+                            <form onSubmit={handlePaymentSubmit}>
+                                <div className="form-group">
+                                    <label>Payment Amount (₹)</label>
+                                    <input
+                                        type="number"
+                                        value={paymentAmount}
+                                        onChange={(e) => setPaymentAmount(e.target.value)}
+                                        placeholder="Enter payment amount"
+                                        required
+                                        min="1"
+                                        max={calculatePendingAmount(selectedSale.amount, selectedSale.receivedAmount)}
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Payment Date</label>
+                                    <input
+                                        type="date"
+                                        value={paymentDate}
+                                        onChange={(e) => setPaymentDate(e.target.value)}
+                                        required
+                                        max={getTodayDate()}
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Payment Mode</label>
+                                    <select
+                                        value={paymentMode}
+                                        onChange={(e) => setPaymentMode(e.target.value)}
+                                        required
+                                    >
+                                        {paymentModes.map(mode => (
+                                            <option key={mode} value={mode}>{mode}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="modal-actions">
+                                    <button type="button" className="cancel-btn" onClick={() => setShowPaymentModal(false)}>
+                                        Cancel
+                                    </button>
+                                    <button type="submit" className="submit-btn">
+                                        Record Payment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="header-section">
                 <h2>Sales (Vechaan) Records</h2>
 
@@ -259,7 +435,7 @@ const SalesView = () => {
                     <div className="stat-card">
                         <div className="stat-label">Pending Amount</div>
                         <div className="stat-value pending">₹ {formatCurrency(totalPending)}</div>
-                        <div className="stat-detail">{filteredSales.length} invoices</div>
+                        <div className="stat-detail">{filteredSales.filter(s => calculatePendingAmount(s.amount, s.receivedAmount) > 0).length} pending invoices</div>
                     </div>
 
                     <div className="stat-card">
@@ -340,7 +516,7 @@ const SalesView = () => {
                         )}
                     </div>
 
-                    {/* Customer, Cotton Type, Payment Filters */}
+                    {/* Customer, Payment Filters */}
                     <div className="filter-row">
                         <div className="filter-item">
                             <label>Customer:</label>
@@ -352,20 +528,6 @@ const SalesView = () => {
                                 <option value="all">All Customers</option>
                                 {customers.map(customer => (
                                     <option key={customer} value={customer}>{customer}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="filter-item">
-                            <label>Cotton Type:</label>
-                            <select
-                                value={cottonTypeFilter}
-                                onChange={(e) => setCottonTypeFilter(e.target.value)}
-                                className="filter-select"
-                            >
-                                <option value="all">All Types</option>
-                                {cottonTypes.map(type => (
-                                    <option key={type} value={type}>{type}</option>
                                 ))}
                             </select>
                         </div>
@@ -442,7 +604,6 @@ const SalesView = () => {
                                 setDateFilter("all");
                                 setSpecificDate("");
                                 setCustomerFilter("all");
-                                setCottonTypeFilter("all");
                                 setPaymentFilter("all");
                                 setPendingFilter("all");
                                 setSearchTerm("");
@@ -452,61 +613,6 @@ const SalesView = () => {
                         </button>
                     </div>
                 </div>
-
-                {/* Breakdown Statistics */}
-                {/* <div className="breakdown-section">
-                    <div className="breakdown-card">
-                        <h4>Customer-wise Summary</h4>
-                        <div className="breakdown-list">
-                            {Object.entries(customerWiseTotals).map(([customer, data]) => (
-                                <div key={customer} className="breakdown-item">
-                                    <div className="breakdown-header">
-                                        <span className="breakdown-label">{customer}</span>
-                                        <span className="breakdown-total">₹ {formatCurrency(data.total)}</span>
-                                    </div>
-                                    <div className="breakdown-details">
-                                        <span className="detail-item">Received: ₹ {formatCurrency(data.received)}</span>
-                                        <span className="detail-item pending">Pending: ₹ {formatCurrency(data.pending)}</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="breakdown-card">
-                        <h4>Payment Method-wise</h4>
-                        <div className="breakdown-list">
-                            {Object.entries(paymentWiseTotals).map(([method, amount]) => (
-                                <div key={method} className="breakdown-item">
-                                    <span className="breakdown-label">{method}:</span>
-                                    <span className="breakdown-value">₹ {formatCurrency(amount)}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="breakdown-card">
-                        <h4>Quick Stats</h4>
-                        <div className="stats-grid">
-                            <div className="stat-item">
-                                <div className="stat-item-label">This Week</div>
-                                <div className="stat-item-value">₹ {formatCurrency(weeklySales)}</div>
-                            </div>
-                            <div className="stat-item">
-                                <div className="stat-item-label">This Month</div>
-                                <div className="stat-item-value">₹ {formatCurrency(monthlySales)}</div>
-                            </div>
-                            <div className="stat-item">
-                                <div className="stat-item-label">Total Invoices</div>
-                                <div className="stat-item-value">{filteredSales.length}</div>
-                            </div>
-                            <div className="stat-item">
-                                <div className="stat-item-label">Avg. Sale</div>
-                                <div className="stat-item-value">₹ {filteredSales.length > 0 ? formatCurrency(totalSales / filteredSales.length) : 0}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
             </div>
 
             {/* Table Section */}
@@ -523,50 +629,66 @@ const SalesView = () => {
                                 <th>Date</th>
                                 <th>Invoice No.</th>
                                 <th>Customer</th>
-                                <th>Cotton Type</th>
-                                <th>Quantity (Kg)</th>
-                                <th>Rate (₹)</th>
-                                <th>Total (₹)</th>
+                                <th>Total Amount (₹)</th>
                                 <th>Received (₹)</th>
                                 <th>Pending (₹)</th>
                                 <th>Payment Mode</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredSales.length > 0 ? (
-                                filteredSales.map((sale) => (
-                                    <tr key={sale.id}>
-                                        <td>{sale.date}</td>
-                                        <td className="invoice-cell">{sale.invoiceNo}</td>
-                                        <td className="customer-cell">{sale.customerName}</td>
-                                        <td className="type-cell">
-                                            <span className="cotton-type-badge">
-                                                {sale.cottonType}
-                                            </span>
-                                        </td>
-                                        <td className="quantity-cell">{sale.quantity}</td>
-                                        <td className="rate-cell">₹ {sale.rate}</td>
-                                        <td className="total-cell">₹ {formatCurrency(sale.totalAmount)}</td>
-                                        <td className="received-cell">₹ {formatCurrency(sale.receivedAmount)}</td>
-                                        <td className={`pending-cell ${sale.pendingAmount > 0 ? 'pending' : 'cleared'}`}>
-                                            ₹ {formatCurrency(sale.pendingAmount)}
-                                        </td>
-                                        <td className="payment-cell">
-                                            <span className={`payment-badge ${sale.paymentMode.toLowerCase()}`}>
-                                                {sale.paymentMode}
-                                            </span>
-                                        </td>
-                                        <td className="status-cell">
-                                            <span className={`status-badge ${sale.pendingAmount > 0 ? 'pending' : 'cleared'}`}>
-                                                {sale.pendingAmount > 0 ? 'Pending' : 'Cleared'}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))
+                                filteredSales.map((sale) => {
+                                    const pendingAmount = calculatePendingAmount(sale.amount, sale.receivedAmount);
+                                    const isPending = pendingAmount > 0;
+
+                                    return (
+                                        <tr key={sale.id}>
+                                            <td>{sale.date}</td>
+                                            <td className="invoice-cell">{sale.invoiceNo}</td>
+                                            <td className="customer-cell">{sale.customerName}</td>
+                                            <td className="total-cell">₹ {formatCurrency(sale.amount)}</td>
+                                            <td className="received-cell">₹ {formatCurrency(sale.receivedAmount)}</td>
+                                            <td className={`pending-cell ${isPending ? 'pending' : 'cleared'}`}>
+                                                ₹ {formatCurrency(pendingAmount)}
+                                            </td>
+                                            <td className="payment-cell">
+                                                <span className={`payment-badge ${sale.paymentMode.toLowerCase()}`}>
+                                                    {sale.paymentMode}
+                                                </span>
+                                            </td>
+                                            <td className="status-cell">
+                                                <span className={`status-badge ${isPending ? 'pending' : 'cleared'}`}>
+                                                    {isPending ? 'Pending' : 'Cleared'}
+                                                </span>
+                                            </td>
+                                            <td className="actions-cell">
+                                                {isPending ? (
+                                                    <div className="action-buttons">
+                                                        <button
+                                                            className="add-payment-btn"
+                                                            onClick={() => openPaymentModal(sale)}
+                                                        >
+                                                            Add Payment
+                                                        </button>
+                                                        <button
+                                                            className="mark-paid-btn"
+                                                            onClick={() => markAsFullyPaid(sale)}
+                                                        >
+                                                            Mark Paid
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <span className="fully-paid">Fully Paid</span>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             ) : (
                                 <tr>
-                                    <td colSpan="11" className="no-data">
+                                    <td colSpan="9" className="no-data">
                                         No sales records found for the selected filters
                                     </td>
                                 </tr>
@@ -592,9 +714,9 @@ const SalesView = () => {
                                 <span className="summary-value pending">₹ {formatCurrency(totalPending)}</span>
                             </div>
                             <div className="summary-item">
-                                <span className="summary-label">Total Quantity:</span>
+                                <span className="summary-label">Pending Invoices:</span>
                                 <span className="summary-value">
-                                    {filteredSales.reduce((sum, sale) => sum + sale.quantity, 0)} Kg
+                                    {filteredSales.filter(s => calculatePendingAmount(s.amount, s.receivedAmount) > 0).length}
                                 </span>
                             </div>
                         </div>
